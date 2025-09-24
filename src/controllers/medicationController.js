@@ -21,6 +21,12 @@ export const MedicationController = {
 
   async create(req, res) {
     try {
+      const { price, quantity } = req.body;
+
+      if (price < 0 || quantity < 0) {
+        return res.status(400).json({ error: "Price and quantity cannot be negative" });
+      }
+
       const med = await MedicationModel.create(req.body);
       res.status(201).json(med);
     } catch (err) {
@@ -30,6 +36,16 @@ export const MedicationController = {
 
   async update(req, res) {
     try {
+      const { price, quantity } = req.body;
+
+      if (price !== undefined && price < 0) {
+        return res.status(400).json({ error: "Price cannot be negative" });
+      }
+
+      if (quantity !== undefined && quantity < 0) {
+        return res.status(400).json({ error: "Quantity cannot be negative" });
+      }
+
       const med = await MedicationModel.update(req.params.id, req.body);
       res.json(med);
     } catch (err) {
